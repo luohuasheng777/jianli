@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Terminal, 
   CassetteTape, 
@@ -246,11 +246,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen w-screen crt-screen p-0 md:p-8 flex items-center justify-center md:overflow-hidden bg-[#f5f2ed] noise-bg">
+    <div className="h-screen w-screen overflow-hidden crt-screen p-0 md:p-8 flex items-center justify-center bg-[#f5f2ed] noise-bg">
       <Scanline />
       
       {/* Main Console Frame */}
-      <div className="w-full max-w-7xl h-full md:h-[900px] bg-[#f5f2ed] border-b-4 md:border-4 border-[#1a1a1a] rounded-none md:shadow-[24px_24px_0px_rgba(26,26,26,1)] flex flex-col relative overflow-hidden">
+      <div className="w-full max-w-7xl h-full bg-[#f5f2ed] border-b-4 md:border-4 border-[#1a1a1a] rounded-none md:shadow-[24px_24px_0px_rgba(26,26,26,1)] flex flex-col relative overflow-hidden">
         
         {/* Top Header Bar */}
         <header className="min-h-[7rem] md:h-28 border-b-4 border-[#1a1a1a] flex flex-col md:flex-row items-center justify-between px-6 md:px-12 py-4 md:py-0 bg-white gap-4 md:gap-0">
