@@ -18,7 +18,8 @@ import {
   Database,
   Layers,
   Zap,
-  Radio
+  Radio,
+  Printer
 } from 'lucide-react';
 
 // --- Types ---
@@ -26,7 +27,7 @@ type Section = 'SUMMARY' | 'EXPERIENCE' | 'SKILLS';
 
 // --- Components ---
 
-const Scanline = () => <div className="scanline" />;
+const Scanline = () => <div className="scanline print:hidden" />;
 
 const RetroButton = ({ 
   label, 
@@ -224,7 +225,7 @@ export default function App() {
 
   if (booting) {
     return (
-      <div className="h-screen w-screen bg-[#f5f2ed] flex flex-col items-center justify-center font-mono text-[#1a1a1a] noise-bg">
+      <div className="h-screen w-screen bg-[#f5f2ed] flex flex-col items-center justify-center font-mono text-[#1a1a1a] noise-bg print:hidden">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -250,7 +251,7 @@ export default function App() {
       <Scanline />
       
       {/* Main Console Frame */}
-      <div className="w-full max-w-7xl h-full bg-[#f5f2ed] border-b-4 md:border-4 border-[#1a1a1a] rounded-none md:shadow-[24px_24px_0px_rgba(26,26,26,1)] flex flex-col relative overflow-hidden">
+      <div className="w-full max-w-7xl h-full bg-[#f5f2ed] border-b-4 md:border-4 border-[#1a1a1a] rounded-none md:shadow-[24px_24px_0px_rgba(26,26,26,1)] flex flex-col relative overflow-hidden print:hidden">
         
         {/* Top Header Bar */}
         <header className="min-h-[7rem] md:h-28 border-b-4 border-[#1a1a1a] flex flex-col md:flex-row items-center justify-between px-6 md:px-12 py-4 md:py-0 bg-white gap-4 md:gap-0">
@@ -292,11 +293,19 @@ export default function App() {
               href={resumeData.contact.portfolio} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 md:gap-3 border-2 border-[#1a1a1a] px-3 md:px-4 py-1.5 md:py-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] md:shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+              className="flex items-center gap-2 md:gap-3 border-2 border-[#1a1a1a] px-3 md:px-4 py-1.5 md:py-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] md:shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all print:hidden"
             >
               <ExternalLink size={14} className="md:w-[18px] md:h-[18px]" />
               <span>作品集</span>
             </motion.a>
+            <motion.button
+              whileHover={{ scale: 1.05, color: "#f27d26" }}
+              onClick={() => window.print()}
+              className="flex items-center gap-2 md:gap-3 border-2 border-[#1a1a1a] px-3 md:px-4 py-1.5 md:py-2 bg-white shadow-[3px_3px_0px_rgba(0,0,0,1)] md:shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all print:hidden"
+            >
+              <Printer size={14} className="md:w-[18px] md:h-[18px]" />
+              <span>导出 PDF</span>
+            </motion.button>
           </div>
         </header>
 
@@ -438,8 +447,60 @@ export default function App() {
       </div>
 
       {/* Background Decorative Elements */}
-      <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] opacity-10">
+      <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] opacity-10 print:hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,rgba(0,0,0,0.05)_2px,transparent_2px),linear-gradient(rgba(0,0,0,0.05)_2px,transparent_2px)] bg-[size:60px_60px]" />
+      </div>
+
+      {/* Print-only Full Content View */}
+      <div className="hidden print:block p-12 bg-white">
+        <div className="mb-12 border-b-8 border-[#1a1a1a] pb-8">
+          <h1 className="text-6xl font-black tracking-tighter mb-4">{resumeData.name}</h1>
+          <p className="text-2xl text-[#f27d26] font-black uppercase tracking-widest">{resumeData.title}</p>
+          <div className="mt-6 flex gap-8 text-sm font-bold uppercase">
+            <span>{resumeData.contact.phone}</span>
+            <span>{resumeData.contact.email}</span>
+            <span>{resumeData.contact.education}</span>
+          </div>
+        </div>
+
+        <div className="space-y-16">
+          <section>
+            <SectionTitle title="个人总结" subtitle="Core Competencies" />
+            <div className="grid grid-cols-1 gap-8">
+              {resumeData.summary.map((item, idx) => (
+                <div key={idx} className="bg-white border-4 border-[#1a1a1a] p-8 shadow-[8px_8px_0px_rgba(0,0,0,1)]">
+                  <h3 className="text-2xl font-black mb-4">{item.title}</h3>
+                  <p className="text-lg leading-relaxed whitespace-pre-wrap">{item.content}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <SectionTitle title="工作经历" subtitle="Career Path" />
+            {resumeData.experience.map((exp, idx) => (
+              <ExperienceCard key={idx} {...exp} />
+            ))}
+          </section>
+
+          <section>
+            <SectionTitle title="游戏阅历" subtitle="Gaming Depth" />
+            <div className="space-y-12">
+              {resumeData.skills.map((skill, idx) => (
+                <div key={idx}>
+                  <h3 className="text-xl font-black uppercase tracking-[0.4em] mb-6">{skill.category}</h3>
+                  <div className="flex flex-wrap gap-4">
+                    {skill.items.map((item, sIdx) => (
+                      <span key={sIdx} className="px-6 py-3 bg-white border-4 border-[#1a1a1a] text-sm font-black shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

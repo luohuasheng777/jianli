@@ -82,6 +82,54 @@ body {
   border-radius: 0px;
 }
 
+@media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+  
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background-color: white !important;
+  }
+
+  /* Ensure borders and shadows show up in PDF */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .crt-screen::before, .scanline {
+    display: none !important;
+  }
+
+  /* Force natural height for printing */
+  .h-screen {
+    height: auto !important;
+  }
+  
+  .overflow-hidden, .overflow-y-auto {
+    overflow: visible !important;
+  }
+
+  .max-w-7xl {
+    max-width: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  main {
+    padding: 2rem !important;
+  }
+
+  /* Avoid breaking cards across pages */
+  .bg-white {
+    break-inside: avoid;
+  }
+}
+
 .cassette-texture {
   background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
   background-size: 24px 24px;
